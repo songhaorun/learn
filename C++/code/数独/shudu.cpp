@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdio>
-#include <stdio.h>
 using namespace std;
 FILE *in,*out;
 int total=0;
@@ -58,7 +57,7 @@ void shuru(int a[10][10])
 	{
 		for(int n=1;n<10;n++)
 		{
-			fscanf(in,"%d",&a[m][n]);
+			fscanf(in,"%1d",&a[m][n]);
 		}
 	}
 }
@@ -74,7 +73,7 @@ void shuchu(int a[10][10])
 		}
 		fprintf(out,"\n");
 	}
-	fprintf(out,"\n\n");	
+	fprintf(out,"\n");	
 }
 void chuli(int a[10][10],bool b[10][10][10],int p,int q,int x,int y,int z)
 {
