@@ -1,4 +1,4 @@
-version: '1'
+version: '3.2'
 
 networks:
   default:
@@ -6,30 +6,30 @@ networks:
 
 services:
   db:
-    image: mariadb
+    image: mariadb:latest
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
     volumes:
-     - ./db:/var/lib/mysql
+      - ./db:/var/lib/mysql
     environment:
-     - MYSQL_ROOT_PASSWORD=1h2j3k<>
-     - MYSQL_DATABASE=nextcloud
-     - MYSQL_USER=nextcloud
-     - MYSQL_PASSWORD=1h2j3k<>
+      - MYSQL_ROOT_PASSWORD=1h2j3k<>
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=1h2j3k<>
     networks:
       - default
 
   app:
-    image: nextcloud
+    image: nextcloud:latest
     container_name: nextcloud
     restart: unless-stopped
     volumes:
-     - ./app:/var/www/html
+      - ./app:/var/www/html
     environment:
-     - MYSQL_DATABASE=nextcloud
-     - MYSQL_USER=nextcloud
-     - MYSQL_PASSWORD=1h2j3k<>
-     - MYSQL_HOST=db
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=1h2j3k<>
+      - MYSQL_HOST=db
     ports:
       - 7788:80
     networks:
@@ -39,7 +39,7 @@ services:
     image: redis
     restart: unless-stopped
     expose:
-    - "6379"
+      - "6379"
     volumes:
       - ./cache:/data
     command: redis-server --requirepass '1h2j3k<>'
