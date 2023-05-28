@@ -16,7 +16,7 @@ int main(){
         fprintf(fout,"\tcase %d:\n",i);
         ans.clear();
         fun(i);
-        fprintf(fout,"\t\tcout<<\"是%d位数\"<<endl;\n",ans.size());
+        fprintf(fout,"\t\tcout<<\"是%zu位数\"<<endl;\n",ans.size());
         for(int j=0;j<ans.size();j++)
             fprintf(fout,"\t\tcout<<\"%s位数是:%d\"<<endl;\n",w[j].c_str(),ans[j]);
         fprintf(fout,"\t\tcout<<\"倒过来是:");
