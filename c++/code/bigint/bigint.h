@@ -6,12 +6,42 @@ class number // 正整数 低位在前高位在后
 
 public:
 	// 构造函数
+
 	number() {}
+	number(int a)
+	{
+		do
+		{
+			this->push_back(a % 10);
+			a /= 10;
+		} while (a != 0);
+	}
+	number(const char *s)
+	{
+		for (int i = strlen(s) - 1; i >= 0; --i)
+			this->push_back(s[i] - '0');
+	}
+	number(const string &s)
+	{
+		for (int i = s.length() - 1; i >= 0; i--)
+			this->push_back(s[i] - '0');
+	}
 	number(const number &a)
 	{
 		// cout << "ncopybuild" << endl;
 		*this = a;
 	}
+
+	// 调试用打印值
+
+	void print() const
+	{
+		cout << "data:";
+		for (int i : *this->data)
+			cout << i << " ";
+		cout << endl;
+	}
+
 	// 迭代器
 
 	auto begin()
@@ -77,11 +107,19 @@ public:
 
 	void push_back(int a)
 	{
-		this->data->push_back(a);
+		this->data->emplace_back(a);
 	}
 	void pop_back()
 	{
 		this->data->pop_back();
+	}
+	void push_front(int a)
+	{
+		this->data->emplace(this->begin(), a);
+	}
+	void pop_front()
+	{
+		this->data->erase(this->begin());
 	}
 
 	// 清空
@@ -96,6 +134,16 @@ public:
 	bool empty() const
 	{
 		return this->data->empty();
+	}
+
+	// 删除前导零
+
+	void erase_frontzero()
+	{
+		while (this->back() == 0)
+			this->pop_back();
+		if (this->empty())
+			this->push_back(0);
 	}
 
 	// 赋值
@@ -201,32 +249,76 @@ public:
 	{
 		number ans;
 		bool jiewei = 0;
-		for (size_t i = 0; i < b.size(); ++i)
+		for (size_t i = 0; i < a.size(); ++i)
 		{
-			ans.push_back(a[i] - b[i] - jiewei);
+			ans.push_back(a[i] - (i < b.size() ? b[i] : 0) - jiewei);
 			if (jiewei = ans.back() < 0)
 				ans.back() += 10;
 		}
-		while (ans.back() == 0)
-			ans.pop_back();
-		if (ans.empty())
-			ans.push_back(0);
+		ans.erase_frontzero();
 		return ans;
 	}
-	friend const number operator*(const number &a, const number &b)
+	friend const number __mul(const number &a, const number &b)
 	{
-		number ans;
+		number ans = 0;
+		for (int i = 0; i < b.size(); ++i)
+		{
+			number t;
+			for (int j = 0; j < i; j++)
+				t.push_back(0);
+			int jinwei = 0;
+			for (int j = 0; j < a.size(); j++)
+			{
+				t.push_back(a[j] * b[i] + jinwei);
+				jinwei = t.back() / 10;
+				t.back() %= 10;
+			}
+			if (jinwei)
+				t.push_back(jinwei);
+			ans += t;
+		}
 		return ans;
+	}
+	friend const number operator*(const number &a, const number &b) // 长乘短
+	{
+		if (a.size() < b.size())
+			return __mul(b, a);
+		return __mul(a, b);
+	}
+	friend const pair<number, number> __div(const number &a, const number &b) // 有余数除法,返回pair<商,余数>,除数为0时返回<0,0>
+	{
+		if (a.size() < b.size())
+			return make_pair(move(number(0)), a);
+		if (b == 0)
+			return make_pair(move(number(0)), move(number(0)));
+		number ta = a, tb, ans;
+		size_t t = a.size() - b.size();
+		for (size_t i = 1; i <= t; ++i)
+			tb.push_back(0);
+		for (int i : b)
+			tb.push_back(i);
+		for (size_t i = 0; i <= t; ++i)
+		{
+			int tans = 0;
+			while (ta >= tb)
+			{
+				ta -= tb;
+				++tans;
+			}
+			ans.push_back(tans);
+			tb.pop_front();
+		}
+		reverse(ans.begin(), ans.end());
+		ans.erase_frontzero();
+		return make_pair(move(ans), move(ta));
 	}
 	friend const number operator/(const number &a, const number &b)
 	{
-		number ans;
-		return ans;
+		return __div(a, b).first;
 	}
 	friend const number operator%(const number &a, const number &b)
 	{
-		number ans;
-		return ans;
+		return __div(a, b).second;
 	}
 };
 
@@ -445,44 +537,22 @@ public:
 	friend const bigint operator*(const bigint &a, const bigint &b)
 	{
 		bigint ans;
-		// 	for(int i=0;i<a.length();i++){
-		// 		bigint t=0;
-		// 		for(int j=0;j<i;j++)
-		// 			t.push_back(0);
-		// 		for(int j=0;j<this->length();j++)
-		// 			t.push_back(this->num[j]*a[i]);
-		// 		ans+=t;
-		// 	}
-		// 	ans.flag=this->flag*a.flag;
-		// 	ans.jian();
+		ans.flag = a.flag * b.flag;
+		ans.num = a.num * b.num;
 		return ans;
 	}
 	friend const bigint operator/(const bigint &a, const bigint &b)
 	{
 		bigint ans;
-		// 	int f=this->flag*a.flag;
-		// 	int fa=a.flag;
-		// 	t.flag=1;
-		// 	a.flag=1;
-		// 	while((t>=a)){
-		// 		t-=a;
-		// 		++ans;
-		// 	}
-		// 	ans.flag=f;
-		// 	a.flag=fa;
-		// 	ans.jian();
+		ans.flag = a.flag * b.flag;
+		ans.num = a.num / b.num;
 		return ans;
 	}
-	friend const bigint operator%(const bigint &a, const bigint &b)
+	friend const bigint operator%(const bigint &a, const bigint &b) // 计算方式与c++相同
 	{
 		bigint ans;
-		// 	ans.flag=1;
-		// 	ta.flag=1;
-		// 	while(tt>=ta)
-		// 		t-=a;
-		// 	ans=t;
-		// 	ans.flag=this->flag;
-		// 	ans.jian();
+		ans.flag = a.flag * b.flag;
+		ans.num = a.num % b.num;
 		return ans;
 	}
 
