@@ -1,5 +1,6 @@
 #vscode的配置文件
 .vscode/*
+*/.vscode/*
 #temp.*,t,in,out(常被用于测试)
 temp.*
 t.*
