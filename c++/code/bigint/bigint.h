@@ -2,7 +2,7 @@
 using namespace std;
 class number // 正整数 低位在前高位在后
 {
-	shared_ptr<vector<int>> data = make_shared<vector<int>>();
+	vector<int> data;
 
 public:
 	// 构造函数
@@ -37,7 +37,7 @@ public:
 	void print() const
 	{
 		cout << "data:";
-		for (int i : *this->data)
+		for (int i : this->data)
 			cout << i << " ";
 		cout << endl;
 	}
@@ -46,94 +46,94 @@ public:
 
 	auto begin()
 	{
-		return this->data->begin();
+		return this->data.begin();
 	}
 	auto begin() const
 	{
-		return this->data->cbegin();
+		return this->data.cbegin();
 	}
 	auto end()
 	{
-		return this->data->end();
+		return this->data.end();
 	}
 	auto end() const
 	{
-		return this->data->cend();
+		return this->data.cend();
 	}
 
 	// 获取长度
 
 	size_t size() const
 	{
-		return this->data->size();
+		return this->data.size();
 	}
 
 	// 访问数字
 
 	int &operator[](size_t i)
 	{
-		return (*this->data)[i];
+		return this->data[i];
 	}
 	const int &operator[](size_t i) const
 	{
-		return (*this->data)[i];
+		return this->data[i];
 	}
 	int &at(size_t i)
 	{
-		return this->data->at(i);
+		return this->data.at(i);
 	}
 	const int &at(size_t i) const
 	{
-		return this->data->at(i);
+		return this->data.at(i);
 	}
 	int &front()
 	{
-		return this->data->front();
+		return this->data.front();
 	}
 	const int &front() const
 	{
-		return this->data->front();
+		return this->data.front();
 	}
 	int &back()
 	{
-		return this->data->back();
+		return this->data.back();
 	}
 	const int &back() const
 	{
-		return this->data->back();
+		return this->data.back();
 	}
 
 	// 增删数字
 
 	void push_back(int a)
 	{
-		this->data->emplace_back(a);
+		this->data.emplace_back(a);
 	}
 	void pop_back()
 	{
-		this->data->pop_back();
+		this->data.pop_back();
 	}
 	void push_front(int a)
 	{
-		this->data->emplace(this->begin(), a);
+		this->data.emplace(this->begin(), a);
 	}
 	void pop_front()
 	{
-		this->data->erase(this->begin());
+		this->data.erase(this->begin());
 	}
 
 	// 清空
 
 	void clear()
 	{
-		this->data->clear();
+		this->data.clear();
 	}
 
 	// 判空
 
 	bool empty() const
 	{
-		return this->data->empty();
+		return this->data.empty();
 	}
 
 	// 删除前导零
@@ -151,13 +151,13 @@ public:
 	number &operator=(const number &a)
 	{
 		// cout << "ncopy" << endl;
-		*this->data = *a.data;
+		this->data = a.data;
 		return *this;
 	}
 	number &operator=(const number &&a)
 	{
 		// cout << "nmove" << endl;
-		this->data = a.data;
+		this->data = move(a.data);
 		return *this;
 	}
 	number &operator+=(const number &a)
@@ -225,7 +225,7 @@ public:
 
 	// 加 减 乘 除 取余
 
-	friend const number __add(const number &l, const number &s) // 长加短
+	static const number __add(const number &l, const number &s) // 长加短
 	{
 		number ans;
 		bool jinwei = 0;
@@ -258,7 +258,7 @@ public:
 		ans.erase_frontzero();
 		return ans;
 	}
-	friend const number __mul(const number &a, const number &b)
+	static const number __mul(const number &a, const number &b)
 	{
 		number ans = 0;
 		for (int i = 0; i < b.size(); ++i)
@@ -285,7 +285,7 @@ public:
 			return __mul(b, a);
 		return __mul(a, b);
 	}
-	friend const pair<number, number> __div(const number &a, const number &b) // 有余数除法,返回pair<商,余数>,除数为0时返回<0,0>
+	static const pair<number, number> __div(const number &a, const number &b) // 有余数除法,返回pair<商,余数>,除数为0时返回<0,0>
 	{
 		if (a.size() < b.size())
 			return make_pair(move(number(0)), a);
@@ -411,6 +411,7 @@ public:
 	{
 		return this->num.end();
 	}
+
 	// 获取长度
 
 	size_t length() const
@@ -517,10 +518,10 @@ public:
 
 	// 加 取相反数 减 乘 除 取余
 
-	friend const bigint operator+(const bigint &a, const bigint &b)
+	static const bigint __add(const bigint &a, const bigint &b, const int c)
 	{
 		bigint ans;
-		if (a.flag == b.flag)
+		if (a.flag == b.flag * c)
 		{
 			ans.flag = a.flag;
 			ans.num = a.num + b.num;
@@ -542,6 +543,10 @@ public:
 		}
 		return ans;
 	}
+	friend const bigint operator+(const bigint &a, const bigint &b)
+	{
+		return __add(a, b, 1);
+	}
 	const bigint operator-() const
 	{
 		bigint ans = *this;
@@ -550,7 +555,7 @@ public:
 	}
 	friend const bigint operator-(const bigint &a, const bigint &b)
 	{
-		return a + -b;
+		return __add(a, b, -1);
 	}
 	friend const bigint operator*(const bigint &a, const bigint &b)
 	{
