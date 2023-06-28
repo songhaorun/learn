@@ -18,13 +18,13 @@ public:
 	}
 	number(const char *s)
 	{
-		for (int i = strlen(s) - 1; i >= 0; --i)
-			this->push_back(s[i] - '0');
+		for (size_t i = strlen(s); i >= 1; --i)
+			this->push_back(s[i - 1] - '0');
 	}
 	number(const string &s)
 	{
-		for (int i = s.length() - 1; i >= 0; i--)
-			this->push_back(s[i] - '0');
+		for (size_t i = s.length(); i >= 1; i--)
+			this->push_back(s[i - 1] - '0');
 	}
 	number(const number &a)
 	{
@@ -192,7 +192,7 @@ public:
 	{
 		if (a.size() != b.size())
 			return 0;
-		for (int i = 0; i <= a.size(); ++i)
+		for (size_t i = 0; i <= a.size(); ++i)
 			if (a[i] != b[i])
 				return 0;
 		return 1;
@@ -205,7 +205,7 @@ public:
 	{
 		if (a.size() != b.size())
 			return a.size() < b.size();
-		for (int i = a.size() - 1; i >= 0; --i)
+		for (size_t i = a.size() - 1; i >= 0; --i)
 			if (a[i] != b[i])
 				return a[i] < b[i];
 		return 0;
@@ -261,13 +261,13 @@ public:
 	static const number __mul(const number &a, const number &b)
 	{
 		number ans = 0;
-		for (int i = 0; i < b.size(); ++i)
+		for (size_t i = 0; i < b.size(); ++i)
 		{
 			number t;
-			for (int j = 0; j < i; j++)
+			for (size_t j = 0; j < i; j++)
 				t.push_back(0);
 			int jinwei = 0;
-			for (int j = 0; j < a.size(); j++)
+			for (size_t j = 0; j < a.size(); j++)
 			{
 				t.push_back(a[j] * b[i] + jinwei);
 				jinwei = t.back() / 10;
@@ -352,7 +352,7 @@ public:
 	}
 	bigint(const char *s)
 	{
-		int ed = 0;
+		int ed = 1;
 		if (s[0] == '-')
 		{
 			this->flag = -1;
@@ -360,12 +360,12 @@ public:
 		}
 		else
 			this->flag = 1;
-		for (int i = strlen(s) - 1; i >= ed; --i)
-			this->push_back(s[i] - '0');
+		for (size_t i = strlen(s) ; i >= ed; --i)
+			this->push_back(s[i-1] - '0');
 	}
 	bigint(const string &s)
 	{
-		int ed = 0;
+		int ed = 1;
 		if (s[0] == '-')
 		{
 			this->flag = -1;
@@ -373,8 +373,8 @@ public:
 		}
 		else
 			this->flag = 1;
-		for (int i = s.length() - 1; i >= ed; i--)
-			this->push_back(s[i] - '0');
+		for (size_t i = s.length() ; i >= ed; i--)
+			this->push_back(s[i-1] - '0');
 	}
 	bigint(const bigint &a)
 	{
