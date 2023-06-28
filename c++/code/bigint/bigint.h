@@ -393,6 +393,24 @@ public:
 		cout << endl;
 	}
 
+	// 迭代器
+
+	auto begin()
+	{
+		return this->num.begin();
+	}
+	auto begin() const
+	{
+		return this->num.begin();
+	}
+	auto end()
+	{
+		return this->num.end();
+	}
+	auto end() const
+	{
+		return this->num.end();
+	}
 	// 获取长度
 
 	size_t length() const
@@ -600,8 +618,8 @@ public:
 	{
 		if (a.flag == -1)
 			out << "-";
-		for (int i = a.length() - 1; i >= 0; --i)
-			out << a[i];
+		for (auto i = a.end(); i != a.begin(); --i)
+			out << *(i - 1);
 		return out;
 	}
 };
