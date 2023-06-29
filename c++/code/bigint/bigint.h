@@ -360,8 +360,8 @@ public:
 		}
 		else
 			this->flag = 1;
-		for (size_t i = strlen(s) ; i >= ed; --i)
-			this->push_back(s[i-1] - '0');
+		for (size_t i = strlen(s); i >= ed; --i)
+			this->push_back(s[i - 1] - '0');
 	}
 	bigint(const string &s)
 	{
@@ -373,8 +373,8 @@ public:
 		}
 		else
 			this->flag = 1;
-		for (size_t i = s.length() ; i >= ed; i--)
-			this->push_back(s[i-1] - '0');
+		for (size_t i = s.length(); i >= ed; i--)
+			this->push_back(s[i - 1] - '0');
 	}
 	bigint(const bigint &a)
 	{
@@ -535,7 +535,7 @@ public:
 			}
 			else
 			{
-				ans.flag = b.flag;
+				ans.flag = b.flag * c;
 				ans.num = b.num - a.num;
 				if (ans.num.size() == 1 && ans.num[0] == 0)
 					ans.flag = 1;
@@ -595,6 +595,8 @@ public:
 	{
 		if (a.flag < b.flag)
 			return 1;
+		if (a.flag > b.flag)
+			return 0;
 		return a.num < b.num ^ a.flag == -1;
 	}
 	friend bool operator>(const bigint &a, const bigint &b)
