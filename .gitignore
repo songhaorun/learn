@@ -8,4 +8,5 @@ t.*
 *.out
 test.*
 #test文件夹(用于测试)
+/test
 */test/*
