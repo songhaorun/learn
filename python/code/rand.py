@@ -1,7 +1,7 @@
 import random
 mx=0
 n=int(input("选项个数："))
-flag=bool(input("是否等比例："))
+flag=input("是否等比例：").lower() in ("yes","true","t","1")
 a={}
 print(f"请输入{n}个选项")
 for i in range(0,n):
