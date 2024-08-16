@@ -11,3 +11,9 @@ t.*
 /test
 */test/*
 test.*
+#exe文件夹
+exe/*
+#.exe文件
+*.exe
+#.class文件
+*.class
